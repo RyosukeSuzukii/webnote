@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>site</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="../css/test1.css" rel="stylesheet" type="text/css" media="screen and (min-width:445px)">
+    <link href="../css/test3.css" rel="stylesheet" type="text/css" media="screen and (max-width:444px)">
+</head>
+<body>
+    <p style="text-align: center;">{{message}}</p>
+    <form method="post" action="/login" id="login_form" style="text-align: center;">
+        ID
+        <input type="text" name="id" value="{{id}}" style="height:30px;">
+        Password
+        <input type="password" name="pass" style="height:30px;">
+        <input type="submit" value="login" style="font-size: 20px;">
+    </form>
+    <script src="/js/login.js"></script>
+</body>

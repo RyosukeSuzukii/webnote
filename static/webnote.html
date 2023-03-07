@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>site</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="css/test1.css" rel="stylesheet" type="text/css" media="screen and (min-width:445px)">
+    <link href="css/test3.css" rel="stylesheet" type="text/css" media="screen and (max-width:444px)">
+</head>
+<body class="none">
+    <header id="top_form">
+        <div id="top_menu_icon">omni<br>.com</div>
+        <div id="top_select">
+            <div class="top_form_item">TOP</div>
+            <div class="top_form_item" id="this_page">WebNote</div>
+            <div class="top_form_item">Github</div>
+            <div class="top_form_item">Work</div>
+            <div class="top_form_item">Memory</div>
+            <div class="top_form_item">Login</div>
+        </div>
+    </header>
+    <header id="addnoteblock_popup" class="none">
+        <div class="ac_popup_block">
+            <div class="popup_name"><a>カテゴリ追加</a>
+                <div class="popup_del_btn">x</div>
+            </div>
+            <div class="popup_content">
+                <div><a>追加するカテゴリ名を入力</a><a class="contents_category"></a></div>
+                <input type="text" name="noteblock_name" id="noteblock_fileter" class="col-sm-5">
+                <br>
+                <div style="text-align: right;"><input type="submit" class="submit_btn" value="追加"></div>
+            </div>
+        </div>
+    </header>
+    <header id="deletenoteblock_popup" class="none">
+        <div class="ac_popup_block">
+            <div class="popup_name"><a>カテゴリ表示</a>
+                <div class="popup_del_btn">x</div></div>
+            <div class="popup_content">
+                <div id="appear_list">
+                </div>
+                <div style="text-align: right;"><input type="submit" class="submit_btn" value="OK"></div>
+            </div>
+        </div>
+    </header>
+    <header id="addcontent_popup" class="none">
+        <div class="ac_popup_block">
+            <div class="popup_name"><a>コンテンツ追加</a>
+                <div class="popup_del_btn">x</div>
+            </div>
+            <div class="popup_content">
+                <div><a>カテゴリ：</a><a class="contents_category"></a></div>
+                <input type="text" name="content_name" id="content_fileter" class="col-sm-5">
+                <br>
+                <div style="text-align: right;"><input type="submit" class="submit_btn" value="追加"></div>
+            </div>
+        </div>
+    </header>
+    <header id="deletecontent_popup" class="none">
+        <div class="ac_popup_block">
+            <div class="popup_name"><a>コンテンツ削除</a>
+                <div class="popup_del_btn">x</div>
+            </div>
+            <div class="popup_content">
+                <div><a>カテゴリ：</a><a class="contents_category"></a></div>
+                <select id="delete_select" name="delete_select" size="4" multiple>
+                </select>
+                <br>
+                <div style="text-align: right;"><input type="submit" class="submit_btn" value="削除"></div>
+            </div>
+        </div>
+    </header>
+    <div id="webnote_main_frame">
+        
+        <div id="webnote_sub">
+            <div id="category_list">
+                <div class="category">ネットワーク ▼</div>
+                <!--
+                <div class="category">PCIボード関連 ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                -->
+            </div>
+        </div>
+        <div id="webnote_main">
+            <h2><a>WebNote</a></h2>
+            <div id="sentence">
+                いろいろな情報をまとめたノート。主に学習したことをまとめる。
+            </div>
+            <h2><a>ノート目次</a><div id="plusicon_block" class="none"><a id="plusicon">+</a><a id="minusicon">−</a></div></h2>
+            <div id="note_box">
+                <div class="note_block">
+                    <div class="top_tag">
+                        <div class="tag">ネットワーク</div>
+                        <div class="contentedit_icon contentadd_icon">+</div>
+                        <select name="icon_change" size="1" class="icon_select">
+                            <option value="add">add</option>
+                            <option value="delete">delete</option>
+                            <option value="rewriting">rewriting</option>
+                        </select>
+                    </div>
+                    <div class="content"><div draggable="true" class="">・ <a href="./webnote/プロトコル.html">プロトコル</a></div><div draggable="true" class="">・ <a href="./webnote/IPv4.html">IPv4</a></div><div draggable="true" class="">・ <a href="./webnote/TCP.html">TCP</a></div><div draggable="true" class="">・ <a href="./webnote/VLAN.html">VLAN</a></div><div draggable="true" class="">・ <a href="./webnote/リンクアグリゲーション.html">リンクアグリゲーション</a></div><div draggable="true">・ <a href="./webnote/SSH.html">SSH</a></div></div>
+                </div>
+                <div class="note_block">
+					<div class="top_tag">
+                        <div class="tag">暗号化技術</div>
+                        <div class="contentedit_icon contentdelete_icon"><img src="/img/delete.png" alt="no img"></div>
+                        <select name="icon_change" size="1" class="icon_select">
+                            <option value="add">add</option>
+                            <option value="delete">delete</option>
+                            <option value="rewriting">rewriting</option>
+                        </select>
+                    </div>
+                    <div class="content"><div draggable="true">・ <a href="./webnote/暗号の基礎.html">暗号の基礎</a></div></div>
+                </div>
+                <div class="note_block none">
+                    <div class="top_tag">
+                        <div class="tag">Java</div>
+                        <div class="contentedit_icon contentadd_icon">+</div>
+                        <select name="icon_change" size="1" class="icon_select">
+                            <option value="add">add</option>
+                            <option value="delete">delete</option>
+                            <option value="rewriting">rewriting</option>
+                        </select>
+                    </div>
+                    <div class="content"></div>
+                </div>
+                <div class="note_block none">
+                    <div class="top_tag">
+                        <div class="tag">JavaScript</div>
+                        <div class="contentedit_icon contentadd_icon">+</div>
+                        <select name="icon_change" size="1" class="icon_select">
+                            <option value="add">add</option>
+                            <option value="delete">delete</option>
+                            <option value="rewriting">rewriting</option>
+                        </select>
+                    </div>
+                    <div class="content"><div draggable="true">・ <a href="./webnote/execCommand.html">execCommand</a></div></div>
+                </div>
+                <div class="note_block none">
+                    <div class="top_tag">
+                        <div class="tag">Flask</div>
+                        <div class="contentedit_icon contentadd_icon">+</div>
+                        <select name="icon_change" size="1" class="icon_select">
+                            <option value="add">add</option>
+                            <option value="delete">delete</option>
+                            <option value="rewriting">rewriting</option>
+                        </select>
+                    </div>
+                    <div class="content"><div draggable="true">・ <a href="./webnote/Session.html">Session</a></div></div>
+                </div>
+                <div class="note_block">
+                    <div class="top_tag">
+                        <div class="tag">アーキテクチャ</div>
+                        <div class="contentedit_icon contentadd_icon">+</div>
+                        <select name="icon_change" size="1" class="icon_select">
+                            <option value="add">add</option>
+                            <option value="delete">delete</option>
+                            <option value="rewriting">rewriting</option>
+                        </select>
+                    </div>
+                    <div class="content"><div draggable="true">・ <a href="./webnote/X Window System.html">X Window System</a></div><div draggable="true">・ <a href="./webnote/コンピュータの概要.html">コンピュータの概要</a></div><div draggable="true">・ <a href="./webnote/CPU.html">CPU</a></div></div>
+                </div>
+                <div class="note_block">
+                    <div class="top_tag">
+                        <div class="tag">OS</div>
+                        <div class="contentedit_icon contentadd_icon">+</div>
+                        <select name="icon_change" size="1" class="icon_select">
+                            <option value="add">add</option>
+                            <option value="delete">delete</option>
+                            <option value="rewriting">rewriting</option>
+                        </select>
+                    </div>
+                    <div class="content"><div draggable="true">・ <a href="./webnote/OS.html">OS</a></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="pocket">
+        <div id="black_curtain" class="none"></div>
+    </div>
+    <script src="js/header.js"></script>
+    <script src="js/webnote.js"></script>
+</body>
+</html>

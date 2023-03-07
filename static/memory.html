@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>site</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="css/test1.css" rel="stylesheet" type="text/css" media="screen and (min-width:445px)">
+    <link href="css/test3.css" rel="stylesheet" type="text/css" media="screen and (max-width:444px)">
+</head>
+<body class="none">
+    <header id="top_form">
+        <div id="top_menu_icon">omni<br>.com</div>
+        <div id="top_select">
+            <div class="top_form_item">TOP</div>
+            <div class="top_form_item">WebNote</div>
+            <div class="top_form_item">Github</div>
+            <div class="top_form_item">Work</div>
+            <div class="top_form_item" id="this_page">Memory</div>
+            <div class="top_form_item">Login</div>
+        </div>
+    </header>
+    <header id="memoryadd_popup" class="none">
+        <div class="ac_popup_block">
+            <div class="popup_name"><a>記録帳の追加</a>
+                <div class="popup_del_btn">x</div>
+            </div>
+            <div class="popup_content">
+                <div><a>記録帳名</a><a class="contents_category"></a></div>
+                <input type="text" name="noteblock_name" class="memory_textarea">
+                <br>
+                <div><a>説明</a><a class="contents_category"></a></div>
+                <input type="text" name="noteblock_name" class="memory_textarea">
+                <br>
+                <div><a>日付</a><a class="contents_category"></a></div>
+                <input type="text" name="noteblock_name" class="memory_textarea">
+                <br>
+                <div style="text-align: right;"><input type="submit" class="submit_btn" value="追加"></div>
+            </div>
+        </div>
+    </header>
+    <div id="webnote_main_frame">
+        
+        <div id="webnote_sub">
+            <div id="category_list">
+                <div class="category">2022 ▼</div>
+                <!--
+                <div class="category">PCIボード関連 ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                -->
+            </div>
+        </div>
+        <div id="webnote_main">
+            <h2><a>Memory</a></h2>
+            <div id="sentence">
+                気になったことや最近行ったことをまとめる記録帳。
+            </div>
+            <h2><a>一覧</a><div id="plusicon_block" class="none"><a id="plusicon">+</a><a id="minusicon">−</a></div></h2>
+            <div id="memory_box">
+                <div class="memory_article">
+                    2022/12/17
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="/memory/pyenvに関すること.html">pyenvに関すること</a>
+                            </div>
+                            <div class="memory_text">pyenvで起きた問題の備忘録</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/12/2
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="/memory/Javaメモ.html">Javaメモ</a>
+                            </div>
+                            <div class="memory_text">Javaで気になったことをまとめる</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/11/28
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="/memory/rescue_simulation.html">rescue_simulation</a>
+                            </div>
+                            <div class="memory_text"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/11/10
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="/memory/phpのメモ.html">phpのメモ</a>
+                            </div>
+                            <div class="memory_text">phpの使い方とか</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/11/7
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="/memory/日々の一時メモ.html">日々の一時メモ</a>
+                            </div>
+                            <div class="memory_text">日々で書き留めておきたことを記録</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/10/22
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="/memory/flutter docterのエラー解決.html">flutter docterのエラー解決</a>
+                            </div>
+                            <div class="memory_text">Flutterを導入時に要する</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/10/21
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="/memory/よく使うCLIコマンド.html">よく使うCLIコマンド</a>
+                            </div>
+                            <div class="memory_text">terminalで使うコマンド</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/10/21
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="/memory/RaspberryPiにプライベートIPアドレスでSSH接続できない問題.html">RaspberryPiにプライベートIPアドレスでSSH接続できない問題</a>
+                            </div>
+                            <div class="memory_text">ルータのネットワークアドレス固定化とルータのDHCP機能により特定のアドレス(raspberrypiの固定IPアドレス)を割り振らないように制限</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/5/5
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="./memory/sum.shtml?day=2022/5/5&amp;name=ApacheでRapsberry Piをwebサーバにする(https).html">ApacheでRapsberry Piをwebサーバにする(https)</a>
+                            </div>
+                            <div class="memory_text">
+                                Raspberry PiをApache2でwebサーバにする
+                                <br>
+                                Raspberry PiにApache2を導入する
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="memory_article">
+                    2022/5/4
+                    <div class="memory_content">
+                        <div class="memory_img_box">
+                            <img src="img/memory.png" alt="draw.io.graph">
+                        </div>
+                        <div class="memory_text_box">
+                            <div class="memory_article_title">
+                                <a href="./memory/sum.shtml?day=2022/5/4&amp;name=【MacとRaspberry Pi】sshコマンドとscpコマンド.html">【MacとRaspberry Pi】sshコマンドとscpコマンド</a>
+                            </div>
+                            <div class="memory_text">
+                                SSH接続することで、MacからRaspberry Piを同一LAN内で操作できる。
+                                <br>
+                                方法
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="pocket">
+        <div id="black_curtain" class="none"></div>
+    </div>
+    <script src="js/header.js"></script>
+    <script src="js/memory.js"></script>
+</body>
+</html>

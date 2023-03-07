@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>site</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="../css/test1.css" rel="stylesheet" type="text/css" media="screen and (min-width:445px)">
+    <link href="../css/test3.css" rel="stylesheet" type="text/css" media="screen and (max-width:444px)">
+</head>
+<body class="none">
+    <header id="top_form">
+        <div id="top_menu_icon">omni<br>.com</div>
+        <div id="top_select">
+            <div class="top_form_item">TOP</div>
+            <div class="top_form_item" id="this_page">WebNote</div>
+            <div class="top_form_item">Github</div>
+            <div class="top_form_item">Work</div>
+            <div class="top_form_item">Memory</div>
+            <div class="top_form_item">Login</div>
+        </div>
+    </header>
+    <header id="pallet" class="none">
+        <div class="pallet_item" title="h1">
+            <a class="none">x</a><img src="/img/pallet_icon/header1.png">
+        </div>
+        <div class="pallet_item" title="本文">
+            <a class="none">x</a><img src="/img/pallet_icon/body.png">
+        </div>
+        <div class="pallet_item" title="h2">
+            <a class="none">x</a><img src="/img/pallet_icon/header2.png">
+        </div>
+        <div class="pallet_item" title="nest">
+            <a class="none">x</a><img src="/img/pallet_icon/nest.png">
+        </div>
+        <div class="pallet_item" title="表">
+            <a class="none">x</a><img src="/img/pallet_icon/table.png" style="width: 21px !important; position:relative; top:2.5px">
+        </div>
+        <div class="pallet_item" title="del">
+            <a class="none">x</a><img src="/img/pallet_icon/delete.png">
+        </div>
+        <div class="pallet_item" title="画像">
+            <a class="none">x</a><img src="/img/pallet_icon/img.png" style="position:relative; top:3px">
+        </div>
+        <div class="pallet_item" title="link">
+            <a class="none">x</a><img src="/img/pallet_icon/link.png" style="width: 18px !important; position:relative; top:6px">
+        </div>
+        <div class="pallet_item" title="段落">
+            <a class="none">x</a><img src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIfhI+py+0Po5y02ouz3jL4D4JOGI7kaZ5Bqn4sycVbAQA7" style="position:relative; top:4px">
+        </div>
+        <div id="cancel_but">fin</div>
+    </header>
+    <header id="img_popup" class="none">
+        <div class="popup_block">
+            <div class="popup_name">画像挿入
+                <div class="option_block">
+                    <img src="/img/gear.png" id="img_gear">
+                    <div id="img_option" class="none">
+                        <div id="imgw_edit">
+                            w:
+                            <select name="width_change" size="1" id="imgw_select">
+                                <option value="auto">auto</option>
+                                <option value="90%">90%</option>
+                                <option value="80%">80%</option>
+                                <option value="70%">70%</option>
+                                <option value="60%">60%</option>
+                                <option value="50%">50%</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="popup_content">
+                <div id="imglist"></div>
+            </div>
+        </div>
+        <div class="popup_block">
+            <div class="popup_name">upload
+                <div class="popup_del_btn">x</div>
+            </div>
+            <div class="popup_content">
+                <input type="file" name="img_file" id="img_file" class="col-sm-5">
+                <br>
+                <div style="text-align: right;"><input type="submit" class="submit_btn" value="送信"></div>
+            </div>
+        </div>
+    </header>
+    <header id="link_popup" class="none">
+        <div class="ac_popup_block">
+            <div class="popup_name"><a>リンク挿入</a>
+                <div class="popup_del_btn">x</div>
+            </div>
+            <div class="popup_content" style="font-size:14px;">
+                <div><a>表示するテキスト</a></div>
+                <input type="text" name="link_text" class="link_textarea">
+                <br>
+                <div><a>遷移するURL</a></div>
+                <input type="text" name="link_url" class="link_textarea">
+                <br>
+                <div style="text-align: right;margin-top:8px;"><input type="submit" class="submit_btn" value="挿入"></div>
+            </div>
+        </div>
+    </header>
+    <header id="justifi" class="none">
+        <div class="ac_popup_block">
+            <img class="intLink" title="Left align" onclick="formatDoc('justifyleft');" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIghI+py+0Po5y02ouz3jL4D4JMGELkGYxo+qzl4nKyXAAAOw==">
+            <img class="intLink" title="Center align" onclick="formatDoc('justifycenter');" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIfhI+py+0Po5y02ouz3jL4D4JOGI7kaZ5Bqn4sycVbAQA7">
+            <img class="intLink" title="Right align" onclick="formatDoc('justifyright');" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIghI+py+0Po5y02ouz3jL4D4JQGDLkGYxouqzl43JyVgAAOw==">
+        </div>
+    </header>
+    <header id="table_popup" class="none">
+        <div class="table_popup_name">表の挿入</div>
+        <div id="table_range">
+            <div class="t_row"><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div></div>
+            <div class="t_row"><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div></div>
+            <div class="t_row"><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div></div>
+            <div class="t_row"><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div></div>
+            <div class="t_row"><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div></div>
+            <div class="t_row"><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div></div>
+            <div class="t_row"><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div></div>
+            <div class="t_row"><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div><div class="t_col"><div class="t_squ"></div></div></div>
+        </div>
+    </header>
+    <div id="webnote_main_frame">
+        <div id="path">omni.com > WebNote > *</div>
+        <div id="webnote_sub">
+            <div id="category_list">
+                <div class="category">ネットワーク ▼</div>
+                <!--
+                <div class="category">PCIボード関連 ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                <div class="category">ネットワーク ▼</div>
+                -->
+            </div>
+        </div>
+        <div id="webnote_main">
+            <h2 contenteditable='false'><a>*</a><div id="penicon_block"><img id="penicon" src="../img/pen.png"></div></h2>
+            <div id="sentence" contenteditable='false'>
+                　hello
+            </div>
+            <div class="details_mean_box" contenteditable='false'>
+                <div class="header1" contenteditable="false">*</div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/header.js"></script>
+    <script src="../js/edit.js"></script>
+</body>
+</html>

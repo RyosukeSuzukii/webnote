@@ -7,7 +7,8 @@ const EditTool = {
     // ページのバージョンを取得する関数
     getVersion: function(){
         //ファイル名とdetailes_mean_boxのinnerHTMLを含むjsonを作成
-        const data = {filename:window.location.href.split('/').pop(),version:host_version};
+        //const data = {filename:window.location.href.split('/').pop(),version:host_version};
+        const data = {filename:window.location.pathname,version:host_version};
         return(fetch("/check/update",{
             method: 'POST', // or 'PUT'
             headers: {
@@ -203,8 +204,8 @@ const EditManagement = {
     save_detailes: function(){
         //ファイル名とdetailes_mean_boxのinnerHTMLを含むjsonを作成
         webnote_main = document.getElementById("webnote_main");
-        //const data = {filename:window.location.href.split('/').pop(),content:details_mean_box.innerHTML};
-        const data = {filename:window.location.href.split('/').pop(),content:webnote_main.innerHTML};
+        //const data = {filename:window.location.href.split('/').pop(),content:webnote_main.innerHTML};
+        const data = {filename:window.location.pathname,content:webnote_main.innerHTML};
         fetch(EditManagement.save_path,{
             method: 'POST', // or 'PUT'
             headers: {

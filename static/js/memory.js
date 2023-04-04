@@ -2,7 +2,8 @@ let host_version = -1;//バージョン情報がないことを表す-1
 // ページのバージョンを取得する関数
 function getVersion(){
     //ファイル名とdetailes_mean_boxのinnerHTMLを含むjsonを作成
-    const data = {filename:window.location.href.split('/').pop(),version:host_version};
+    //const data = {filename:window.location.href.split('/').pop(),version:host_version};
+    const data = {filename:window.location.pathname,version:host_version};
     return(fetch("/check/update",{
         method: 'POST', // or 'PUT'
         headers: {

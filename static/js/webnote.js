@@ -2,7 +2,8 @@ let host_version = -1;//バージョン情報がないことを表す-1
 // バージョンを取得する関数
 function getVersion(){
     //ファイル名とdetailes_mean_boxのinnerHTMLを含むjsonを作成
-    const data = {filename:window.location.href.split('/').pop(),version:host_version};
+    //const data = {filename:window.location.href.split('/').pop(),version:host_version};
+    const data = {filename:window.location.pathname,version:host_version};
     return (fetch("/check/update",{
         method: 'POST', // or 'PUT'
         headers: {
@@ -211,8 +212,9 @@ addcontent_submit_btn.addEventListener("click",function(){
             const note_box = document.getElementById("note_box");
             let tmp = note_box.innerHTML;//エラー時に元に戻せるようにnote_box.innerHTMLを保管しておく
             
+            const categoryname = edit_ele.querySelector(".tag").textContent;
             //target_content.innerHTML += '    <div draggable="true" >・ <a href="./webnote/'+content_fileter.value+'.html">'+content_fileter.value+'</a></div>\n                    ';
-            target_content.innerHTML += '<div draggable="true" >・ <a href="./webnote/'+content_fileter.value+'.html">'+content_fileter.value+'</a></div>';
+            target_content.innerHTML += '<div draggable="true" >・ <a href="/webnote/'+categoryname+'/'+content_fileter.value+'.html">'+content_fileter.value+'</a></div>';
             
             //webnote.htmlのバージョンを確認して、ノート追加における送信処理
             getVersion().then(jsondata => {
@@ -236,7 +238,7 @@ function notedelete_save(){
     //カテゴリとコンテントの辞書オブジェクトを作る
     const data = {category:deletecontent_category,note_box:note_box.innerHTML};
         
-    //パス名を/add/webnote_contentにして送信
+    //パス名を/delete/webnote_contentにして送信
     fetch("/delete/webnote_content",{
         method: 'POST', // or 'PUT'
         headers: {
@@ -335,7 +337,7 @@ function blockadd_save(){
     //カテゴリとコンテントの辞書オブジェクトを作る
     const data = {new_category:noteblock_fileter.value,note_box:note_box.innerHTML};
         
-    //パス名を/add/webnote_contentにして送信
+    //パス名を/add/webnote_categoryにして送信
     fetch("/add/webnote_category",{
         method: 'POST', // or 'PUT'
         headers: {
@@ -364,15 +366,27 @@ function blockadd_save(){
 let tmp;
 //ノートブロック追加ポップアップのsubmitボタンをクリックした時のイベントリスナーを登録
 addnoteblock_submit_btn.addEventListener("click",function(e){
-    if(noteblock_fileter.value!=""){
-        addnoteblock_submit_btn.disabled = true; //連打防止
-        addnoteblock_submit_btn.value="追加中";
-        const note_box = document.getElementById("note_box");
-        tmp = note_box.innerHTML;//エラー時に元に戻せるようにnote_box.innerHTMLを保管しておく
-        
-        const new_note_block = document.createElement("div");//新たにdiv要素を生成
-        new_note_block.classList.add("note_block");//生成したnote_blockのclassにnote_blockを追加
-        new_note_block.innerHTML += '\n\
+    if(noteblock_fileter.value=="")return;//何も入力がないなら
+
+    if(noteblock_fileter.value.indexOf("/")!=-1)return;//入力値にパス区切り文字'/'が入っているなら
+
+    const tags = document.getElementsByClassName("tag");
+    // 既に同じ名前をカテゴリがあった場合キャンセルする
+    f = false;
+    Array.prototype.forEach.call(tags,function(tag){
+        categoryname = tag.textContent;
+        if(categoryname == noteblock_fileter.value)f = true;
+    });
+    if(f)return;
+
+    addnoteblock_submit_btn.disabled = true; //連打防止
+    addnoteblock_submit_btn.value="追加中";
+    const note_box = document.getElementById("note_box");
+    tmp = note_box.innerHTML;//エラー時に元に戻せるようにnote_box.innerHTMLを保管しておく
+    
+    const new_note_block = document.createElement("div");//新たにdiv要素を生成
+    new_note_block.classList.add("note_block");//生成したnote_blockのclassにnote_blockを追加
+    new_note_block.innerHTML += '\n\
                     <div class="top_tag">\n\
                         <div class="tag">' + noteblock_fileter.value + '</div>\n\
                         <div class="contentedit_icon contentadd_icon">+</div>\n\
@@ -384,20 +398,19 @@ addnoteblock_submit_btn.addEventListener("click",function(e){
                     </div>\n\
                     <div class="content"></div>\n\
                 ';
-        note_box.innerHTML+="\    ";
-        note_box.appendChild(new_note_block);//新たなnote_blockをnote_boxの末尾の子として追加
-        note_box.innerHTML+="\n            ";
-        set_addIcon(new_note_block.getElementsByClassName("contentedit_icon")[0]);//editアイコンをaddにしておく
-        new_note_block.getElementsByClassName("icon_select")[0].addEventListener("change",set_iconSelect);//selectアイコンにクリックイベント関数を登録する
-        
-        //webnote.htmlのバージョンを確認してバージョンの違いがなければwebnote.htmlを更新
-        getVersion().then(jsondata => {
-            send_format(jsondata,blockadd_save);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
+    note_box.innerHTML+="\    ";
+    note_box.appendChild(new_note_block);//新たなnote_blockをnote_boxの末尾の子として追加
+    note_box.innerHTML+="\n            ";
+    set_addIcon(new_note_block.getElementsByClassName("contentedit_icon")[0]);//editアイコンをaddにしておく
+    new_note_block.getElementsByClassName("icon_select")[0].addEventListener("change",set_iconSelect);//selectアイコンにクリックイベント関数を登録する
+    
+    //webnote.htmlのバージョンを確認してバージョンの違いがなければwebnote.htmlを更新
+    getVersion().then(jsondata => {
+        send_format(jsondata,blockadd_save);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 });
 
 const minusicon = document.getElementById("minusicon");
@@ -452,8 +465,8 @@ function blockdelete_save(){
     //カテゴリとコンテントの辞書オブジェクトを作る
     const data = {new_category:"null",note_box:note_box.innerHTML};
 
-    //パス名を/add/webnote_contentにして送信
-    fetch("/add/webnote_category",{
+    //パス名を/modify/webnote_contentにして送信
+    fetch("/modify/webnote_category",{
         method: 'POST', // or 'PUT'
         headers: {
             'Content-Type': 'application/json',
@@ -518,8 +531,8 @@ function dragend_savefunc(){
     //カテゴリとコンテントの辞書オブジェクトを作る
     const data = {new_category:"none",note_box:note_box.innerHTML};
                 
-    //パス名を/add/webnote_contentにして送信
-    fetch("/add/webnote_category",{
+    //パス名を/modify/webnote_contentにして送信
+    fetch("/modify/webnote_category",{
         method: 'POST', // or 'PUT'
         headers: {
             'Content-Type': 'application/json',

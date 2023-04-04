@@ -39,6 +39,185 @@ app.secret_key = 'BWfAew4oE43ewabz09xkaS6aPg1' #cookieのsessionを暗号化す�
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[-1] in ALLOWED_EXTENSIONS
 
+#pathのファイルのバージョンを更新する
+def updatePageVersion(path: str):
+    with open(VERSION_FILEPATH, "r") as f:
+        version_dic = json.load(f)
+    if path in version_dic:
+        version_dic[path]+=1
+    with open(VERSION_FILEPATH, "w") as f:
+        json.dump(version_dic, f, indent=4)
+
+#カテゴリディレクトリを作成する
+def create_wabnoteCategoryDir(dirname: str) -> str:
+    dirpath = os.path.dirname(__file__)+'/static/webnote/'+dirname
+    error_text = ""
+    try:
+        os.mkdir(dirpath)#パスがdirpathのディレクトリを作成
+
+    #既にあるディレクトリのパスを指定もしくは存在しないディレクトリを通過するパスを指定した場合
+    except (FileExistsError,FileNotFoundError) as e:
+        error_text = type(e)
+    
+    #その他のエラーの場合
+    except Exception as e:
+        error_text = "想定外のエラー:"+type(e)
+
+    return(error_text)
+
+#webnote.htmlを更新する
+def update_htmlWebnote(note_box: str):
+    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
+    webnotepath = os.path.dirname(__file__)+'/static/webnote.html'
+    with open(webnotepath,'r',encoding='utf-8') as fileobj:
+        with open(tmppath,'w',encoding='utf-8') as outobj:
+            notwrite_flag = False
+            while True:
+                text_line = fileobj.readline()
+                if text_line:
+                    if '<div id="note_box">' in text_line:
+                        outobj.write('            <div id="note_box">')
+                        outobj.write(note_box)
+                        notwrite_flag = True
+                    elif('            </div>\n' == text_line and notwrite_flag):
+                        outobj.write("</div>\n")
+                        notwrite_flag = False
+                    elif(notwrite_flag == False):
+                        outobj.write(text_line)
+                else:
+                    break
+
+    #一時ファイルから元にファイルに変更後の内容を格納する
+    with open(tmppath,'r',encoding='utf-8') as fileobj:
+        with open(webnotepath,'w',encoding='utf-8') as outobj:
+            while True:
+                text_line = fileobj.readline()
+                if text_line:
+                    outobj.write(text_line)
+                else:
+                    break
+    
+    #一時ファイルの内容を空にしておく
+    with open(tmppath,'w',encoding='utf-8') as outobj:
+        outobj.write("")
+
+#パスpathのノートコンテンツを更新する
+def update_noteContent(pathname:str, webnote_main_children):
+    #編集するファイルのパス
+    filepath = os.path.dirname(__file__)+'/static'+pathname
+    #一時的に内容を格納するためのパス
+    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
+
+    #一時ファイルに変更後の内容を格納する
+    with open(filepath,'r',encoding='utf-8') as fileobj:
+        with open(tmppath,'w',encoding='utf-8') as outobj:
+            notwrite_flag = False
+            while True:
+                text_line = fileobj.readline()
+                if text_line:
+                    #if('<div class="details_mean_box"' in text_line):
+                    if('<div id="webnote_main">' in text_line):
+                        outobj.write(text_line[0:len(text_line)-1])
+                        #outobj.write(request.json["content"])
+                        for ele in webnote_main_children:
+                            outobj.write(str(ele))
+                        notwrite_flag = True
+                    #elif('            </div>\n' == text_line and notwrite_flag):
+                    elif('        </div>\n' == text_line and notwrite_flag):
+                        #outobj.write("</div>\n")
+                        outobj.write(text_line)
+                        notwrite_flag = False
+                    elif(notwrite_flag == False):
+                        outobj.write(text_line)
+                else:
+                    break
+    
+    #一時ファイルから元にファイルに変更後の内容を格納する
+    with open(tmppath,'r',encoding='utf-8') as fileobj:
+        with open(filepath,'w',encoding='utf-8') as outobj:
+            while True:
+                text_line = fileobj.readline()
+                if text_line:
+                    outobj.write(text_line)
+                else:
+                    break
+    
+    #一時ファイルの内容を空にしておく
+    with open(tmppath,'w',encoding='utf-8') as outobj:
+        outobj.write("")
+
+#パスpathのノートコンテンツを生成する
+def create_noteContent(content:str, dirname:str, category:str = ""):
+    categoryname = category
+    if category != "":
+        category = '/'+category
+    #編集するファイルのパス
+    filepath = os.path.dirname(__file__)+'/static/'+dirname + category+'/'+content+".html"
+    #ベースとなるhtmlテキストを格納しているファイルのパス
+    basepath = os.path.dirname(__file__)+'/static/'+dirname+'/base.html'
+    #webnoteディレクトリのファイルを列挙
+    page_list = glob.glob(os.path.dirname(__file__)+'/static/'+dirname + category+'/*.*')
+
+    if filepath not in page_list:#コンテント名のファイルがwebnoteディレクトリにない場合新たに生成
+        #新しいコンテントに対応するHTMLをwebnoteディレクトリに生成する
+        with open(basepath,'r',encoding='utf-8') as fileobj:
+            with open(filepath,'w',encoding='utf-8') as outobj:
+                while True:
+                    text_line = fileobj.readline()
+                    if text_line:#もしテキストラインがあれば
+                        if "*" in text_line or "$" in text_line:#もしテキストに*が含まれていたら
+                            newtext = ""
+                            for i in range(len(text_line)):#テキストの*をcontentに置き換え
+                                if text_line[i] == "*": #テキストi番目に*文字であったら
+                                    newtext += content #contentをnewtextに付け足す
+                                elif text_line[i] == "$": #テキストi番目に$文字があったら
+                                    newtext += (categoryname+" > "+content)
+                                else:
+                                    newtext += text_line[i]
+                            outobj.write(newtext)
+                        else:
+                            outobj.write(text_line)
+                    else:
+                        break
+        #return(jsonify({'status': "false",'message': "コンテントが他に重複しています"}), 400)
+
+#memory.htmlを更新する
+def update_htmlMemory(memory_box:str):
+    #追加する記録帳に伴い、memory.htmlに変更を加える
+    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
+    memorypath = os.path.dirname(__file__)+'/static/memory.html'
+    with open(memorypath,'r',encoding='utf-8') as fileobj:
+        with open(tmppath,'w',encoding='utf-8') as outobj:
+            notwrite_flag = False
+            while True:
+                text_line = fileobj.readline()
+                if text_line:
+                    if '<div id="memory_box">' in text_line:
+                        outobj.write('            <div id="memory_box">')
+                        outobj.write(memory_box)
+                        notwrite_flag = True
+                    elif('            </div>\n' == text_line and notwrite_flag):
+                        outobj.write("</div>\n")
+                        notwrite_flag = False
+                    elif(notwrite_flag == False):
+                        outobj.write(text_line)
+                else:
+                    break
+    
+    #一時ファイルから元のファイルに変更後の内容を格納する
+    with open(tmppath,'r',encoding='utf-8') as fileobj:
+        with open(memorypath,'w',encoding='utf-8') as outobj:
+            while True:
+                text_line = fileobj.readline()
+                if text_line:
+                    outobj.write(text_line)
+                else:
+                    break
+    
+    #一時ファイルの内容を空にしておく
+    with open(tmppath,'w',encoding='utf-8') as outobj:
+        outobj.write("")
+
 # ルーティング
 @app.route('/')
 def index():
@@ -180,62 +359,22 @@ def api_save():
         return(jsonify(res='error'), 400)
 
     print(request.json)
+
+    #編集するファイルのパス
+    pathname = urllib.parse.unquote(request.json["filename"]) #ホストが現在開いているページのパス(デコード)
+    dirname = "webnote"
+
+    if pathname.split('/')[1] != dirname:
+        return(jsonify({'status': "false",'message': "webnoteのノートコンテンツではない:"+pathname.split('/')[1]}), 400)
+
     #ページの保存にあたって、ページのバージョンを更新
-    path = urllib.parse.unquote(request.json["filename"]) #ホストが現在開いているページのパス(デコード)
-    with open(VERSION_FILEPATH, "r") as f:
-        version_dic = json.load(f)
-    if path in version_dic:
-        version_dic[path]+=1
-    with open(VERSION_FILEPATH, "w") as f:
-        json.dump(version_dic, f, indent=4)
+    updatePageVersion(pathname)#pathのページのバージョンを更新
 
     #flex_textarea_dummyのmarkdownテキストをhtmlに変換したwebnote_main要素の子要素リストを取得
     webnote_main_children = mark_parse.html_parse(request.json["content"])
 
-    #編集するファイルのパス
-    pathname = urllib.parse.unquote(request.json["filename"])
-    filepath = os.path.dirname(__file__)+'/static/webnote/'+pathname
-    #一時的に内容を格納するためのパス
-    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
-
-    #一時ファイルに変更後の内容を格納する
-    with open(filepath,'r',encoding='utf-8') as fileobj:
-        with open(tmppath,'w',encoding='utf-8') as outobj:
-            notwrite_flag = False
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    #if('<div class="details_mean_box"' in text_line):
-                    if('<div id="webnote_main">' in text_line):
-                        outobj.write(text_line[0:len(text_line)-1])
-                        #outobj.write(request.json["content"])
-                        for ele in webnote_main_children:
-                            outobj.write(str(ele))
-                        notwrite_flag = True
-                    #elif('            </div>\n' == text_line and notwrite_flag):
-                    elif('        </div>\n' == text_line and notwrite_flag):
-                        #outobj.write("</div>\n")
-                        outobj.write(text_line)
-                        notwrite_flag = False
-                    elif(notwrite_flag == False):
-                        outobj.write(text_line)
-                else:
-                    break
-    
-    #一時ファイルから元にファイルに変更後の内容を格納する
-    with open(tmppath,'r',encoding='utf-8') as fileobj:
-        with open(filepath,'w',encoding='utf-8') as outobj:
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    outobj.write(text_line)
-                else:
-                    break
-    
-    #一時ファイルの内容を空にしておく
-    with open(tmppath,'w',encoding='utf-8') as outobj:
-        outobj.write("")
-    
+    #ノートコンテンツを保存
+    update_noteContent(pathname, webnote_main_children)
 
     return jsonify(res='ok')
 
@@ -248,81 +387,26 @@ def add_webnoteContent():
     if "id" not in session:
         return(jsonify(res='error'), 400)
     
-    category = request.json["category"]#コンテントのカテゴリ
+    categoryname = request.json["category"]#コンテントのカテゴリ
     content = request.json["content"]#コンテント
     note_box = request.json["note_box"]#note_boxコンテンツ
+    dirname = "webnote"
+
+    categorydirpath = os.path.dirname(__file__)+'/static/'+dirname+'/'+categoryname+'/'
+    dirpaths = glob.glob(os.path.dirname(__file__)+'/static/'+dirname+'/*/')
+    #ノートコンテンツを入れるカテゴリディレクトリが存在するか 存在しなければ処理を終了
+    if categorydirpath not in dirpaths:
+        return(jsonify({'status': "false",'message': "存在しないカテゴリ"}), 400)
 
     #ページの保存にあたって、ページのバージョンを更新
-    path = "webnote.html" #バージョンを更新するファイルのパス
-    with open(VERSION_FILEPATH, "r") as f:
-        version_dic = json.load(f)
-    if path in version_dic:
-        version_dic[path]+=1
-    with open(VERSION_FILEPATH, "w") as f:
-        json.dump(version_dic, f, indent=4)
+    path = "/webnote.html" #バージョンを更新するファイルのパス
+    updatePageVersion(path)#pathのページのバージョンを更新
 
-    #編集するファイルのパス
-    filepath = os.path.dirname(__file__)+'/static/webnote/'+content+".html"
-    #ベースとなるhtmlテキストを格納しているファイルのパス
-    basepath = os.path.dirname(__file__)+'/static/webnote/base.html'
-    #webnoteディレクトリのファイルを列挙
-    webnotepage_list = glob.glob(os.path.dirname(__file__)+'/static/webnote/*.*')
-
-    if filepath not in webnotepage_list:#コンテント名のファイルがwebnoteディレクトリにない場合新たに生成
-        #新しいコンテントに対応するHTMLをwebnoteディレクトリに生成する
-        with open(basepath,'r',encoding='utf-8') as fileobj:
-            with open(filepath,'w',encoding='utf-8') as outobj:
-                while True:
-                    text_line = fileobj.readline()
-                    if text_line:#もしテキストラインがあれば
-                        if "*" in text_line:#もしテキストに*が含まれていたら
-                            newtext = ""
-                            for i in range(len(text_line)):#テキストの*をcontentに置き換え
-                                if text_line[i] == "*": #テキストi番目に*文字であったら
-                                    newtext += content #contentをnewtextに付け足す
-                                else:
-                                    newtext += text_line[i]
-                            outobj.write(newtext)
-                        else:
-                            outobj.write(text_line)
-                    else:
-                        break
-        #return(jsonify({'status': "false",'message': "コンテントが他に重複しています"}), 400)
+    #webnoteディレクトリにノートコンテンツを生成する
+    create_noteContent(content, dirname, categoryname)
     
     #新しいコンテントに伴い、webnote.htmlに変更を加える
-    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
-    webnotepath = os.path.dirname(__file__)+'/static/webnote.html'
-    with open(webnotepath,'r',encoding='utf-8') as fileobj:
-        with open(tmppath,'w',encoding='utf-8') as outobj:
-            notwrite_flag = False
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    if '<div id="note_box">' in text_line:
-                        outobj.write('            <div id="note_box">')
-                        outobj.write(note_box)
-                        notwrite_flag = True
-                    elif('            </div>\n' == text_line and notwrite_flag):
-                        outobj.write("</div>\n")
-                        notwrite_flag = False
-                    elif(notwrite_flag == False):
-                        outobj.write(text_line)
-                else:
-                    break
-
-    #一時ファイルから元にファイルに変更後の内容を格納する
-    with open(tmppath,'r',encoding='utf-8') as fileobj:
-        with open(webnotepath,'w',encoding='utf-8') as outobj:
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    outobj.write(text_line)
-                else:
-                    break
-    
-    #一時ファイルの内容を空にしておく
-    with open(tmppath,'w',encoding='utf-8') as outobj:
-        outobj.write("")
+    update_htmlWebnote(note_box)
     
     return(jsonify({'status': "true",'message': "OK"}), 200)
 
@@ -339,48 +423,11 @@ def delete_webnoteContent():
     note_box = request.json["note_box"]#note_boxコンテンツ
 
     #ページの保存にあたって、ページのバージョンを更新
-    path = "webnote.html" #バージョンを更新するファイルのパス
-    with open(VERSION_FILEPATH, "r") as f:
-        version_dic = json.load(f)
-    if path in version_dic:
-        version_dic[path]+=1
-    with open(VERSION_FILEPATH, "w") as f:
-        json.dump(version_dic, f, indent=4)
+    path = "/webnote.html" #バージョンを更新するファイルのパス
+    updatePageVersion(path)#pathのページのバージョンを更新
 
     #削除するコンテントに伴い、webnote.htmlに変更を加える
-    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
-    webnotepath = os.path.dirname(__file__)+'/static/webnote.html'
-    with open(webnotepath,'r',encoding='utf-8') as fileobj:
-        with open(tmppath,'w',encoding='utf-8') as outobj:
-            notwrite_flag = False
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    if '<div id="note_box">' in text_line:
-                        outobj.write('            <div id="note_box">')
-                        outobj.write(note_box)
-                        notwrite_flag = True
-                    elif('            </div>\n' == text_line and notwrite_flag):
-                        outobj.write("</div>\n")
-                        notwrite_flag = False
-                    elif(notwrite_flag == False):
-                        outobj.write(text_line)
-                else:
-                    break
-
-    #一時ファイルから元にファイルに変更後の内容を格納する
-    with open(tmppath,'r',encoding='utf-8') as fileobj:
-        with open(webnotepath,'w',encoding='utf-8') as outobj:
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    outobj.write(text_line)
-                else:
-                    break
-    
-    #一時ファイルの内容を空にしておく
-    with open(tmppath,'w',encoding='utf-8') as outobj:
-        outobj.write("")
+    update_htmlWebnote(note_box)
     
     return(jsonify({'status': "true",'message': "OK"}), 200)
 
@@ -396,49 +443,41 @@ def add_webnoteCategory():
     new_category = request.json["new_category"]#コンテントのカテゴリ
     note_box = request.json["note_box"]#note_boxコンテンツ
 
+    #新しいカテゴリ名にパス区切り文字'/'を含む場合、その旨を示すメッセージを返して処理を終了
+    if '/' in new_category: return(jsonify({'status': "false","message": "パス区切り文字'/'がカテゴリ名に入っています"}, 400))
+
+    #新しいカテゴリのディレクトリを生成する
+    error_text = create_wabnoteCategoryDir(new_category)
+    #もし何らかのエラーにより生成できなかった場合、その旨を示すメッセージを返して処理を終了する
+    if error_text != "": return(jsonify({'status': "false","message": "カテゴリディレクトリを作成不可:"+error_text}, 400))
+
     #ページの保存にあたって、ページのバージョンを更新
-    path = "webnote.html" #バージョンを更新するファイルのパス
-    with open(VERSION_FILEPATH, "r") as f:
-        version_dic = json.load(f)
-    if path in version_dic:
-        version_dic[path]+=1
-    with open(VERSION_FILEPATH, "w") as f:
-        json.dump(version_dic, f, indent=4)
+    path = "/webnote.html" #バージョンを更新するファイルのパス
+    updatePageVersion(path)#pathのページのバージョンを更新
 
-    #追加するカテゴリに伴い、webnote.htmlに変更を加える
-    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
-    webnotepath = os.path.dirname(__file__)+'/static/webnote.html'
-    with open(webnotepath,'r',encoding='utf-8') as fileobj:
-        with open(tmppath,'w',encoding='utf-8') as outobj:
-            notwrite_flag = False
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    if '<div id="note_box">' in text_line:
-                        outobj.write('            <div id="note_box">')
-                        outobj.write(note_box)
-                        notwrite_flag = True
-                    elif('            </div>\n' == text_line and notwrite_flag):
-                        outobj.write("</div>\n")
-                        notwrite_flag = False
-                    elif(notwrite_flag == False):
-                        outobj.write(text_line)
-                else:
-                    break
-
-    #一時ファイルから元にファイルに変更後の内容を格納する
-    with open(tmppath,'r',encoding='utf-8') as fileobj:
-        with open(webnotepath,'w',encoding='utf-8') as outobj:
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    outobj.write(text_line)
-                else:
-                    break
+    #変更するカテゴリに伴い、webnote.htmlに変更を加える
+    update_htmlWebnote(note_box)
     
-    #一時ファイルの内容を空にしておく
-    with open(tmppath,'w',encoding='utf-8') as outobj:
-        outobj.write("")
+    return(jsonify({'status': "true",'message': "OK"}), 200)
+
+# パスが/modify/webnote_categoryだったときの処理
+@app.route('/modify/webnote_category',methods=["POST"])
+def modify_webnoteCategory():
+    if request.headers['Content-Type'] != 'application/json':
+        print(request.headers['Content-Type'])
+        return(jsonify({'status': "false",'message': "希望しているContent-Typeが異なる"}), 400)
+    if "id" not in session:
+        return(jsonify(res='error'), 400)
+
+    new_category = request.json["new_category"]#コンテントのカテゴリ
+    note_box = request.json["note_box"]#note_boxコンテンツ
+
+    #ページの保存にあたって、ページのバージョンを更新
+    path = "/webnote.html" #バージョンを更新するファイルのパス
+    updatePageVersion(path)#pathのページのバージョンを更新
+
+    #変更するカテゴリに伴い、webnote.htmlに変更を加える
+    update_htmlWebnote(note_box)
     
     return(jsonify({'status': "true",'message': "OK"}), 200)
 
@@ -455,76 +494,15 @@ def add_memory_article():
     memory_box = request.json["memory_box"]#memory_boxコンテンツ
 
     #ページの保存にあたって、ページのバージョンを更新
-    path = "memory.html" #バージョンを更新するファイルのパス
-    with open(VERSION_FILEPATH, "r") as f:
-        version_dic = json.load(f)
-    if path in version_dic:
-        version_dic[path]+=1
-    with open(VERSION_FILEPATH, "w") as f:
-        json.dump(version_dic, f, indent=4)
-    
-    #編集するファイルのパス
-    filepath = os.path.dirname(__file__)+'/static/memory/'+article_name+".html"
-    #ベースとなるhtmlテキストを格納しているファイルのパス
-    basepath = os.path.dirname(__file__)+'/static/memory/base.html'
-    #memoryディレクトリのファイルを列挙
-    memorypage_list = glob.glob(os.path.dirname(__file__)+'/static/memory/*.*')
+    path = "/memory.html" #バージョンを更新するファイルのパス
+    updatePageVersion(path)#pathのページのバージョンを更新
 
-    #記録帳名のファイルがmemoryディレクトリにない場合新たに生成
-    if filepath not in memorypage_list:
-        #新しい記録帳に対応するHTMLをmemoryディレクトリに生成する
-        with open(basepath,'r',encoding='utf-8') as fileobj:
-            with open(filepath,'w',encoding='utf-8') as outobj:
-                while True:
-                    text_line = fileobj.readline()
-                    if text_line:#もしテキストラインがあれば
-                        if "*" in text_line:#もしテキストに*が含まれていたら
-                            newtext = ""
-                            for i in range(len(text_line)):#テキストの*をarticle_nameに置き換え
-                                if text_line[i] == "*": #テキストi番目に*文字であったら
-                                    newtext += article_name #article_nameをnewtextに付け足す
-                                else:
-                                    newtext += text_line[i]
-                            outobj.write(newtext)
-                        else:
-                            outobj.write(text_line)
-                    else:
-                        break
+    dirname = "memory"
+    #memoryディレクトリにノートコンテンツを生成する
+    create_noteContent(article_name, dirname)
     
     #追加する記録帳に伴い、memory.htmlに変更を加える
-    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
-    memorypath = os.path.dirname(__file__)+'/static/memory.html'
-    with open(memorypath,'r',encoding='utf-8') as fileobj:
-        with open(tmppath,'w',encoding='utf-8') as outobj:
-            notwrite_flag = False
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    if '<div id="memory_box">' in text_line:
-                        outobj.write('            <div id="memory_box">')
-                        outobj.write(memory_box)
-                        notwrite_flag = True
-                    elif('            </div>\n' == text_line and notwrite_flag):
-                        outobj.write("</div>\n")
-                        notwrite_flag = False
-                    elif(notwrite_flag == False):
-                        outobj.write(text_line)
-                else:
-                    break
-    
-    #一時ファイルから元のファイルに変更後の内容を格納する
-    with open(tmppath,'r',encoding='utf-8') as fileobj:
-        with open(memorypath,'w',encoding='utf-8') as outobj:
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    outobj.write(text_line)
-                else:
-                    break
-    
-    #一時ファイルの内容を空にしておく
-    with open(tmppath,'w',encoding='utf-8') as outobj:
-        outobj.write("")
+    update_htmlMemory(memory_box)
     
     return(jsonify({'status': "true",'message': "OK"}), 200)
 
@@ -538,58 +516,22 @@ def save_memory_article():
         return(jsonify(res='error'), 400)
 
     print(request.json)
+
+    #編集するファイルのパス
+    pathname = urllib.parse.unquote(request.json["filename"]) #ホストが現在開いているページのパス(デコード)
+    dirname = "memory"
+
+    if pathname.split('/')[1] != dirname:
+        return(jsonify({'status': "false",'message': "memoryのノートコンテンツではない:"+pathname.split('/')[1]}), 400)
+
     #ページの保存にあたって、ページのバージョンを更新
-    path = urllib.parse.unquote(request.json["filename"]) #ホストが現在開いているページのパス(デコード)
-    with open(VERSION_FILEPATH, "r") as f:
-        version_dic = json.load(f)
-    if path in version_dic:
-        version_dic[path]+=1
-    with open(VERSION_FILEPATH, "w") as f:
-        json.dump(version_dic, f, indent=4)
+    updatePageVersion(pathname)#pathのページのバージョンを更新
 
     #flex_textarea_dummyのmarkdownテキストをhtmlに変換したwebnote_main要素の子要素リストを取得
     webnote_main_children = mark_parse.html_parse(request.json["content"])
 
-    #編集するファイルのパス
-    pathname = urllib.parse.unquote(request.json["filename"])
-    filepath = os.path.dirname(__file__)+'/static/memory/'+pathname
-    #一時的に内容を格納するためのパス
-    tmppath = os.path.dirname(__file__)+'/static/webnote/tmp.html'
-
-    #一時ファイルに変更後の内容を格納する
-    with open(filepath,'r',encoding='utf-8') as fileobj:
-        with open(tmppath,'w',encoding='utf-8') as outobj:
-            notwrite_flag = False
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    if('<div id="webnote_main">' in text_line):
-                        outobj.write(text_line[0:len(text_line)-1])
-                        for ele in webnote_main_children:
-                            outobj.write(str(ele))
-                        notwrite_flag = True
-                    elif('        </div>\n' == text_line and notwrite_flag):
-                        outobj.write(text_line)
-                        notwrite_flag = False
-                    elif(notwrite_flag == False):
-                        outobj.write(text_line)
-                else:
-                    break
-    
-    #一時ファイルから元にファイルに変更後の内容を格納する
-    with open(tmppath,'r',encoding='utf-8') as fileobj:
-        with open(filepath,'w',encoding='utf-8') as outobj:
-            while True:
-                text_line = fileobj.readline()
-                if text_line:
-                    outobj.write(text_line)
-                else:
-                    break
-    
-    #一時ファイルの内容を空にしておく
-    with open(tmppath,'w',encoding='utf-8') as outobj:
-        outobj.write("")
-    
+    #ノートコンテンツの変更を加える
+    update_noteContent(pathname, webnote_main_children)
 
     return jsonify(res='ok')
 
